@@ -18,11 +18,12 @@ def getJointStates(robot):
 def main():
 
         print(pb.getNumJoints(bot))
-        pb.setJointMotorControlArray(bot, range(pb.getNumJoints(bot)), pb.POSITION_CONTROL,targetPositions=[0.0, 0.0,0.0,0.0,0.0,0.0,0,0])
+        pb.setJointMotorControlArray(bot, range(pb.getNumJoints(bot)), pb.POSITION_CONTROL,targetPositions=[1.0, 0.51,0.1,0.1,0.0,0.0,0,0])
+        #print(pb.getBasePositionAndOrientation(bot))
         for _ in range(10000):
                 pb.stepSimulation()
                 time.sleep(0.1)
-                
+        print(pb.getBasePositionAndOrientation(bot))        
 
 
 def move(bot, torques):
@@ -47,5 +48,7 @@ def move(bot, torques):
         time.sleep(5)
     
 if __name__ == '__main__':
-    move(bot,[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
-    
+        torque = pb.calculateInverseDynamics(bot, [-0.04204, 8.01e-05, 0.07964, 0.0, 0.0, 0.0, 1.0], [0,0],[0,0])
+        print(torque)
+        move(bot,torque)
+        #main()
