@@ -44,9 +44,9 @@
       <geometry>
         <mesh filename="package://meshes/irb120_3_58/collision/base_link.stl"/>
       </geometry>
-      <!--<material name="">
+      <material name="">
         <color rgba="1 1 0 1"/>
-      </material>-->
+      </material>
     </collision>
   </link>
   <link name="link_1">
@@ -69,9 +69,9 @@
       <geometry>
         <mesh filename="package://meshes/irb120_3_58/collision/link_1.stl"/>
       </geometry>
-      <!--<material name="">
+      <material name="">
         <color rgba="1 1 0 1"/>
-      </material>-->
+      </material>
     </collision>
   </link>
   <link name="link_2">
@@ -94,9 +94,9 @@
       <geometry>
         <mesh filename="package://meshes/irb120_3_58/collision/link_2.stl"/>
       </geometry>
-      <!--<material name="">
+      <material name="">
         <color rgba="1 1 0 1"/>
-      </material>-->
+      </material>
     </collision>
   </link>
   <link name="link_3">
@@ -119,9 +119,9 @@
       <geometry>
         <mesh filename="package://meshes/irb120_3_58/collision/link_3.stl"/>
       </geometry>
-      <!--<material name="">
+      <material name="">
         <color rgba="1 1 0 1"/>
-      </material>-->
+      </material>
     </collision>
   </link>
   <link name="link_4">
@@ -144,9 +144,9 @@
       <geometry>
         <mesh filename="package://meshes/irb120_3_58/collision/link_4.stl"/>
       </geometry>
-      <!--<material name="">
+      <material name="">
         <color rgba="1 1 0 1"/>
-      </material>-->
+      </material>
     </collision>
   </link>
   <link name="link_5">
@@ -169,9 +169,9 @@
       <geometry>
         <mesh filename="package://meshes/irb120_3_58/collision/link_5.stl"/>
       </geometry>
-      <!--<material name="">
+      <material name="">
         <color rgba="1 1 0 1"/>
-      </material>-->
+      </material>
     </collision>
   </link>
   <link name="link_6">
@@ -194,9 +194,9 @@
       <geometry>
         <mesh filename="package://meshes/irb120_3_58/collision/link_6.stl"/>
       </geometry>
-      <!--<material name="">
+      <material name="">
         <color rgba="1 1 0 1"/>
-      </material>-->
+      </material>
     </collision>
   </link>
   <link name="tool0"/>
