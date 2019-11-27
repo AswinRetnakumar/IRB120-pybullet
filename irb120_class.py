@@ -51,4 +51,4 @@ class irb():
         self.vel = jv
         self.error = self.goal - self.pos
 
-        return self.pos, self.error, self.done
+        return self.pos, self.vel, self.error, self.done

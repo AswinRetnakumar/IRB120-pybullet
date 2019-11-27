@@ -24,13 +24,17 @@ sim_env=copy.deepcopy(env)
 done=False
 rewards=0
 cnt=0
+AA = []
+BB = []
 while done==False:
     print(cnt)
     q=env.pos
     f1.write(str(q)+'\n')
     dq=env.vel
     f2.write(str(dq)+'\n')
-    u=calc_lqr_input(env, sim_env,mode='continous')
+    u, A, B = calc_lqr_input(env, sim_env)
+    AA.append(A)
+    BB.append(B)
     print('u:',u)
     f3.write(str(u)+'\n')
     x,reward,done,info=env.step(u)
