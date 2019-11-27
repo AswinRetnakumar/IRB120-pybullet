@@ -53,7 +53,7 @@ def approximate_B(env, x, u, delta=1e-5):
 def calc_lqr_input(env, sim_env):
 
     # get the current state from the true env
-    state=copy.deepcopy(env.pos)
+    state=copy.deepcopy(env.state)
     goal=copy.deepcopy(env.goal)
     Q=copy.deepcopy(env.Q)
     R=copy.deepcopy(env.R)

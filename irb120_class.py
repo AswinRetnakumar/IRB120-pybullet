@@ -19,9 +19,9 @@ class irb():
         self.init_pos = jp
         self.init_vel = jv
         self.goal = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.pos = self.init_pos
+        self.state = self.init_pos
         self.vel = self.init_vel
-        self.error = self.goal - self.pos
+        self.error = self.goal - self.state
 
     def reset(self):
 
@@ -47,8 +47,8 @@ class irb():
         pb.setJointMotorControlArray(self.bot, range(pb.getNumJoints(self.bot)), pb.TORQUE_CONTROL, forces= torques)
         pb.stepSimulation()
         jp, jv, _ = self.getJointStates(self.bot)
-        self.pos = jp
+        self.state = jp
         self.vel = jv
-        self.error = self.goal - self.pos
+        self.error = self.goal - self.state
 
-        return self.pos, self.vel, self.error, self.done
+        return self.state, self.vel, self.error, self.done
