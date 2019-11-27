@@ -15,6 +15,7 @@ def getJointStates(robot):
   joint_torques = [state[3] for state in joint_states]
   return joint_positions, joint_velocities, joint_torques
 
+"""
 def main():
 
         print(pb.getNumJoints(bot))
@@ -24,31 +25,29 @@ def main():
                 pb.stepSimulation()
                 time.sleep(0.1)
         print(pb.getBasePositionAndOrientation(bot))        
-
+"""
 
 def move(bot, torques):
-        prev = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        for i in range(0,5000,10):
-                #forces for torque cntrl and target_position s for pos control                                                        
-                #base =[-590, 590],shoulder, elbow,                            
-                pb.setJointMotorControlArray(bot, range(pb.getNumJoints(bot)), pb.TORQUE_CONTROL, forces= torques) # fourth state is unused
-                                                                                                # i dont know why
-                jp, jv, jt = getJointStates(bot)
-                '''if (jp[1])< -1.5:
-                        print(jp)
-                        print(i)
-                        pb.disconnect()
-                        break
-                '''
-                prev = jp
-                print("pos:", jp)
-                print("vel:", jv)
-                time.sleep(0.2)
+       
+        #pb.setJointMotorControl2(bot, 4, pb.VELOCITY_CONTROL, force= 0)
+        pb.setJointMotorControlArray(bot, range(pb.getNumJoints(bot)), pb.VELOCITY_CONTROL, forces= [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        pb.setJointMotorControlArray(bot, range(pb.getNumJoints(bot)), pb.TORQUE_CONTROL, forces= torques)
+        for _ in range(2):
                 pb.stepSimulation()
-        time.sleep(5)
-    
+                jp , jv, _ = getJointStates(bot)
+                print "states:", jp
+                print "Joint Vel:",jv
+                time.sleep(3)
+        for i in range(pb.getNumJoints(bot)):
+                pb.resetJointStateMultiDof(bot, i, targetValue= [0.0], targetVelocity= [0.0])
+        jp , jv, _ = getJointStates(bot)
+        print "states:", jp
+        print "Joint Vel:",jv
+        time.sleep(5)                
+        
+            
 if __name__ == '__main__':
-        torque = pb.calculateInverseDynamics(bot, [-0.04204, 8.01e-05, 0.07964, 0.0, 0.0, 0.0, 1.0], [0,0],[0,0])
-        print(torque)
+        torque = [1000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         move(bot,torque)
-        #main()
+        pb.disconnect()
+        
