@@ -14,26 +14,29 @@ class irb():
         pb.setGravity(0,0,-9.8)
         planeId = pb.loadURDF("plane.urdf")
         self.bot = pb.loadURDF("irb120_3_58.urdf",[0, 0, 0], useFixedBase=1)
-        pb.setJointMotorControlArray(self.bot, range(pb.getNumJoints(self.bot)), pb.VELOCITY_CONTROL, forces= [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        pb.setJointMotorControlArray(self.bot, range(pb.getNumJoints(self.bot)), pb.VELOCITY_CONTROL, forces= [20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0])
         jp , jv, _ = self.getJointStates()
-        print "states:", jp
+       
         self.init_pos = jp
         self.init_vel = jv
-        self.goal = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.state = self.init_pos
+        self.goal = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.state = self.init_pos + self.init_vel
         self.vel = self.init_vel
+        self.pos = self.init_pos
+       
         self.error = np.sum(np.subtract(self.goal,self.state))
         self.done = False
+        print "states:", self.state
 
     def reset(self):
 
         for i in range(pb.getNumJoints(self.bot)):
             pb.resetJointStateMultiDof(self.bot, i, targetValue= [self.init_pos[i]], targetVelocity = [self.init_vel[i]])
         
-    def set_state(self, state, vel):
+    def set_state(self, pos, vel):
 
         for i in range(pb.getNumJoints(self.bot)):
-            pb.resetJointStateMultiDof(self.bot, i, targetValue= state[i], targetVelocity = vel[i])
+            pb.resetJointStateMultiDof(self.bot, i, targetValue= [pos[i]], targetVelocity = [vel[i]])
 
 
     def getJointStates(self):
@@ -48,8 +51,10 @@ class irb():
                
         pb.setJointMotorControlArray(self.bot, range(pb.getNumJoints(self.bot)), pb.TORQUE_CONTROL, forces= torques)
         pb.stepSimulation()
+        time.sleep(0.01)
         jp, jv, _ = self.getJointStates()
-        self.state = jp
+        self.pos = jp
+        self.state = jp + jv
         self.vel = jv
         self.error = np.sum(np.subtract(self.goal,self.state))
         if self.error == 0:

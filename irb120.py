@@ -30,15 +30,15 @@ def main():
 def move(bot, torques):
        
         #pb.setJointMotorControl2(bot, 4, pb.VELOCITY_CONTROL, force= 0)
-        pb.setJointMotorControlArray(bot, range(pb.getNumJoints(bot)), pb.VELOCITY_CONTROL, forces= [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-        pb.setJointMotorControlArray(bot, range(pb.getNumJoints(bot)), pb.TORQUE_CONTROL, forces= torques)
-        for _ in range(2):
+        pb.setJointMotorControlArray(bot, range(6), pb.VELOCITY_CONTROL, forces= [20.0, 20.0, 20.0, 20.0, 20.0, 20.0])
+        pb.setJointMotorControlArray(bot, range(6), pb.TORQUE_CONTROL, forces= torques)
+        for _ in range(100):
                 pb.stepSimulation()
                 jp , jv, _ = getJointStates(bot)
                 print "length:", len(jp)
                 print "states:", jp
                 print "Joint Vel:",jv
-                time.sleep(3)
+                time.sleep(0.01)
         for i in range(pb.getNumJoints(bot)):
                 pb.resetJointStateMultiDof(bot, i, targetValue= [0.0], targetVelocity= [0.0])
         jp , jv, _ = getJointStates(bot)
@@ -49,7 +49,7 @@ def move(bot, torques):
         
             
 if __name__ == '__main__':
-        torque = [1000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        torque = [0.0, 0.0, 0.0, 1000.0, 0.0, 0.0]
         move(bot,torque)
-        pb.disconnect()
+        
         

@@ -35,14 +35,13 @@ while done==False:
     u, A, B = calc_lqr_input(env, sim_env)
     AA.append(A)
     BB.append(B)
-    print('u:',u)
+    #print('u:',u)
     f3.write(str(u)+'\n')
-    x,reward,done,info=env.step(u)
-    rewards += reward
+    x,vel,reward,done=env.step(u)
+    rewards += np.sum(reward)
     f4.write(str(rewards)+'\n')
-    print("rewards:",rewards)
+    #print("rewards:",rewards)
     print(done)
-    print(info)
     cnt=cnt+1
 f1.close()
 f2.close()
