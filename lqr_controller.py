@@ -28,7 +28,7 @@ AA = []
 BB = []
 while done==False:
     print(cnt)
-    q=env.pos
+    q=env.state
     f1.write(str(q)+'\n')
     dq=env.vel
     f2.write(str(dq)+'\n')

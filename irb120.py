@@ -35,12 +35,14 @@ def move(bot, torques):
         for _ in range(2):
                 pb.stepSimulation()
                 jp , jv, _ = getJointStates(bot)
+                print "length:", len(jp)
                 print "states:", jp
                 print "Joint Vel:",jv
                 time.sleep(3)
         for i in range(pb.getNumJoints(bot)):
                 pb.resetJointStateMultiDof(bot, i, targetValue= [0.0], targetVelocity= [0.0])
         jp , jv, _ = getJointStates(bot)
+        print "length:", len(jp)
         print "states:", jp
         print "Joint Vel:",jv
         time.sleep(5)                
