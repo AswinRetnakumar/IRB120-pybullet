@@ -32,7 +32,7 @@ def move(bot, torques):
         #pb.setJointMotorControl2(bot, 4, pb.VELOCITY_CONTROL, force= 0)
         pb.setJointMotorControlArray(bot, range(6), pb.VELOCITY_CONTROL, forces= [20.0, 20.0, 20.0, 20.0, 20.0, 20.0])
         pb.setJointMotorControlArray(bot, range(6), pb.TORQUE_CONTROL, forces= torques)
-        for _ in range(100):
+        for _ in range(1000):
                 pb.stepSimulation()
                 jp , jv, _ = getJointStates(bot)
                 print "length:", len(jp)
@@ -49,7 +49,7 @@ def move(bot, torques):
         
             
 if __name__ == '__main__':
-        torque = [0.0, 0.0, 0.0, 1000.0, 0.0, 0.0]
+        torque = [0.0, 0.0, 0.0, 0.0, 0.0, 10.0]
         move(bot,torque)
         
         

@@ -41,7 +41,7 @@ while done==False:
     rewards += np.sum(reward)
     f4.write(str(rewards)+'\n')
     #print("rewards:",rewards)
-    print(done)
+    #print(done)
     cnt=cnt+1
 f1.close()
 f2.close()
