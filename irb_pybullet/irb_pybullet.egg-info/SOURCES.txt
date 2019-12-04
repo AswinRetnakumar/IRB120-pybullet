@@ -1,0 +1,6 @@
+setup.py
+irb_pybullet.egg-info/PKG-INFO
+irb_pybullet.egg-info/SOURCES.txt
+irb_pybullet.egg-info/dependency_links.txt
+irb_pybullet.egg-info/requires.txt
+irb_pybullet.egg-info/top_level.txt

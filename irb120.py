@@ -38,7 +38,7 @@ def move(bot, torques):
                 print "length:", len(jp)
                 print "states:", jp
                 print "Joint Vel:",jv
-                time.sleep(0.01)
+                time.sleep(0.1)
         for i in range(pb.getNumJoints(bot)):
                 pb.resetJointStateMultiDof(bot, i, targetValue= [0.0], targetVelocity= [0.0])
         jp , jv, _ = getJointStates(bot)
