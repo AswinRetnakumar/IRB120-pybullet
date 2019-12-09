@@ -23,12 +23,13 @@ def getJointStates(robot):
 def main():
 
         print(pb.getNumJoints(bot))
-        pb.setJointMotorControlArray(bot, range(6), pb.POSITION_CONTROL,targetPositions=[1.9, 0.0,0.0,0.0,0.0,0])
+        pb.setJointMotorControlArray(bot, range(6), pb.POSITION_CONTROL,targetPositions=[ 1.4295368 , -0.6637281 ,  0.63082004,  0.47785744,  0.26692984,
+       -0.44841298])
         #print(pb.getBasePositionAndOrientation(bot))
         #pb.stepSimulation()
         for _ in range(100):
                 pb.stepSimulation()
-                #time.sleep(0.1)
+                time.sleep(0.1)
         time.sleep(2)
         pos,ore,_,_, _, _ = pb.getLinkState(bot, 6)
         pose = list(pos)+list(ore)
@@ -37,6 +38,6 @@ def main():
 if __name__ == '__main__':
         pos,ore,_,_, _, _ = pb.getLinkState(bot, 6)
         print "init pos and orientation", pos, " ", ore
-        print "joint limits: ", pb.getJointInfo(bot,6)[7:10]
+        #print "joint limits: ", pb.getJointInfo(bot,6)[7:10]
         
         main()

@@ -6,9 +6,10 @@ from gym.envs.registration import register
 import pybullet as pb
 import time
 import pybullet_data
-
+import functools
 
 physicsClient = pb.connect(pb.GUI)
+#physicsClient = pb.connect(pb.DIRECT)
 pb.setAdditionalSearchPath(pybullet_data.getDataPath()) 
 pb.setGravity(0,0,-9.8)
 planeId = pb.loadURDF("plane.urdf")
@@ -34,11 +35,11 @@ class OpenaiIRB(gym.core.Env):
         self.init_vel = [0.0]*6
         self._goal_pose = [0.2665122782069116, 0.40988654527750035, 0.16178715865384272 , 0.1685172244060629, 0.568363626537449, 0.16851711653306128, 0.7875066441262947]
         self.observation_space = gym.spaces.Box(
-            low=np.array([-np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf]),
-            high=np.array([np.inf, np.inf, np.inf, np.inf, np.inf, np.inf]))
+            low=np.array([-np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf]),
+            high=np.array([np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf]))
         
         self.action_space = gym.spaces.Box(
-            low  = np.array([-1.91, -1.91, -2.5, -2.0, -1.5, -1]), 
+            low  = np.array([-1.91, -1.4, -2.5, -2.0, -1.5, -1]), 
             high = np.array([1.91, 0.9, 0.8, 2.0, 1.5, 0.0]))
 
         self.bot = pb.loadURDF("irb120_3_58.urdf",[0, 0, 0], useFixedBase=1)
@@ -70,11 +71,17 @@ class OpenaiIRB(gym.core.Env):
 
     def reward_compute(self,state):
         
-        threshold = 0.001
+        threshold = 1
+        threshold1 = 0.001
         done = False
         if np.sum( np.absolute(self.distance(state)) ) < threshold:
+            reward = 10
+        elif np.sum( np.absolute(self.distance(state)) ) < threshold1:
             reward = 100
 
+        elif np.sum( np.absolute(self.distance(state)) ) == 0:
+            reward = 1000
+            done = True
         else:
             reward = -10
         
@@ -86,12 +93,28 @@ class OpenaiIRB(gym.core.Env):
         # Takes an action from algorithm, publish the data to ROS and collects pose data.
         # Compares pose with goal pose and computes reward and determines whether the current pose is same as goal pose
         # If yes done is set to true
-        print "step function"
+        #print "step function"
+        print("Action: ", action)
         pb.setJointMotorControlArray(self.bot, range(6), pb.POSITION_CONTROL,targetPositions= action)
-        for _ in range(100):
-                pb.stepSimulation()
+        
+        
+        pb.stepSimulation()
+        
+        curr = [0.0]*6
+        
+        while True:
+            pb.stepSimulation()
+            curr = [0.0]*6
+            #time.sleep(0.01)
+            for i in range(6):
+                curr[i]= pb.getJointState(self.bot, i)[0]
+            #print("Current: ", curr)
+            if functools.reduce(lambda i, j : i and j, map(lambda m, k: (m-k)< 0.0001, action, curr), True):
+                break
+    
         pos,ore,_,_, _, _ = pb.getLinkState(self.bot, 6)
         state = list(pos)+list(ore)
+        print("state: ", state)
         reward,done = self.reward_compute(state)
 
         return self.state, reward, done, {}
