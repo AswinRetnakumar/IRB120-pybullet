@@ -23,8 +23,7 @@ def getJointStates(robot):
 def main():
 
         print(pb.getNumJoints(bot))
-        pb.setJointMotorControlArray(bot, range(6), pb.POSITION_CONTROL,targetPositions=[ 1.4295368 , -0.6637281 ,  0.63082004,  0.47785744,  0.26692984,
-       -0.44841298])
+        pb.setJointMotorControlArray(bot, range(6), pb.POSITION_CONTROL,targetPositions=[2.0868742, 0.99862355, 0.8, 1.0039154, 0.9852633, 1.0926043])
         #print(pb.getBasePositionAndOrientation(bot))
         #pb.stepSimulation()
         for _ in range(100):

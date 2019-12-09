@@ -1,11 +1,14 @@
+
 # https://deeplearningcourses.com/c/cutting-edge-artificial-intelligence
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+import time
 import gym
 import matplotlib.pyplot as plt
 from datetime import datetime
 import irb_pybullet
 
+tf.disable_v2_behavior() 
 
 
 ### avoid crashing on Mac
@@ -69,6 +72,7 @@ class ReplayBuffer:
     self.done_buf[self.ptr] = done
     self.ptr = (self.ptr+1) % self.max_size
     self.size = min(self.size+1, self.max_size)
+    print("Buffer updated")
 
   def sample_batch(self, batch_size=32):
     idxs = np.random.randint(0, self.size, size=batch_size)
@@ -85,22 +89,23 @@ def ddpg(
     ac_kwargs=dict(),
     seed=0,
     save_folder=None,
-    num_train_episodes=100,
+    num_train_episodes=2,
     test_agent_every=25,
     replay_size=int(1e6),
     gamma=0.99, 
     decay=0.995,
     mu_lr=1e-3,
     q_lr=1e-3,
-    batch_size=100,
-    start_steps=10000, 
+    batch_size=50,
+    start_steps=50, 
     action_noise=0.1,
-    max_episode_length=1000):
+    max_episode_length=500):
 
   tf.set_random_seed(seed)
   np.random.seed(seed)
 
-  env, test_env = env_fn(), env_fn()
+  env = env_fn()
+  #test_env = env_fn()
 
   # comment out this line if you don't want to record a video of the agent
   '''
@@ -116,8 +121,9 @@ def ddpg(
   # Assumes both low and high values are the same
   # Assumes all actions have the same bounds
   # May NOT be the case for all environments
-  action_max = env.action_space.high[0]
-
+  action_max = env.action_space.high # update required, ongoing
+  action_min = env.action_space.low
+  
   # Create Tensorflow placeholders (neural network inputs)
   X = tf.placeholder(dtype=tf.float32, shape=(None, num_states)) # state
   A = tf.placeholder(dtype=tf.float32, shape=(None, num_actions)) # action
@@ -183,10 +189,17 @@ def ddpg(
   def get_action(s, noise_scale):
     a = sess.run(mu, feed_dict={X: s.reshape(1,-1)})[0]
     a += noise_scale * np.random.randn(num_actions)
-    return np.clip(a, -action_max, action_max)
+    a =list(a)
+    print("agent unscaled: ", a)
+    k = 0
+    for z in range(6):
+      a[z] = (a[z]/2)*(action_max[z]-action_min[z])
+      a[z] = np.maximum(np.minimum(a[z], action_max[z]), action_min[z])
+    return  a  #np.clip(a, action_min, action_max)
 
   test_returns = []
-
+  '''
+  verthe samayam kalayan
   def test_agent(num_episodes=5):
     t0 = datetime.now()
     n_steps = 0
@@ -202,7 +215,7 @@ def ddpg(
       print('test return:', episode_return, 'episode_length:', episode_length)
       test_returns.append(episode_return)
     # print("test steps per sec:", n_steps / (datetime.now() - t0).total_seconds())
-
+  '''
 
   # Main loop: play episode and train
   returns = []
@@ -211,29 +224,29 @@ def ddpg(
   num_steps = 0
   for i_episode in range(num_train_episodes):
 
+    print("Episode: ",i_episode)
+    time.sleep(3)
     # reset env
     s, episode_return, episode_length, d = env.reset(), 0, 0, False
     k, p = 0, 0
     while not (d or (episode_length == max_episode_length)):
       # For the first `start_steps` steps, use randomly sampled actions
       # in order to encourage exploration.
-      
+
+      print("At iteration: ", num_steps)
       if num_steps > start_steps:
-        
-        a = get_action(s, action_noise)
         if p == 0:
             print("using get actions")  
         p+=1
-
+        a = get_action(s, action_noise)
+        
       else:
          
         a = env.action_space.sample()
-        print("using random sampling") 
-        '''
         if k == 0:
             print("using random sampling") 
         k+=1
-        '''
+        
 
       # Keep track of the number of steps done
       num_steps += 1
@@ -244,6 +257,7 @@ def ddpg(
       s2, r, d, _ = env.step(a)
       episode_return += r
       episode_length += 1
+      
 
       # Ignore the "done" signal if it comes from hitting the time
       # horizon (that is, when it's an artificial terminal signal
@@ -280,10 +294,11 @@ def ddpg(
 
     print("Episode:", i_episode + 1, "Return:", episode_return, 'episode_length:', episode_length)
     returns.append(episode_return)
-
-    # Test the agent
+    '''
+    # Test the agent , venda... vendathonda
     if i_episode > 0 and i_episode % test_agent_every == 0:
       test_agent()
+    '''
 
   # on Mac, plotting results in an error, so just save the results for later
   # if you're not on Mac, feel free to uncomment the below lines
@@ -321,7 +336,7 @@ def smooth(x):
 if __name__ == '__main__':
   import argparse
   parser = argparse.ArgumentParser()
-  # parser.add_argument('--env', type=str, default='HalfCheetah-v2')
+  
   parser.add_argument('--env', type=str, default='irb_pybullet-v0')
   parser.add_argument('--hidden_layer_sizes', type=int, default=300)
   parser.add_argument('--num_layers', type=int, default=1)

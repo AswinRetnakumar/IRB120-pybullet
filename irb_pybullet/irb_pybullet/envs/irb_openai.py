@@ -71,7 +71,7 @@ class OpenaiIRB(gym.core.Env):
 
     def reward_compute(self,state):
         
-        threshold = 1
+        threshold = 2
         threshold1 = 0.001
         done = False
         if np.sum( np.absolute(self.distance(state)) ) < threshold:
@@ -94,11 +94,11 @@ class OpenaiIRB(gym.core.Env):
         # Compares pose with goal pose and computes reward and determines whether the current pose is same as goal pose
         # If yes done is set to true
         #print "step function"
-        print("Action: ", action)
-        pb.setJointMotorControlArray(self.bot, range(6), pb.POSITION_CONTROL,targetPositions= action)
+        print("Action: ", list(action))
+        pb.setJointMotorControlArray(self.bot, range(6), pb.POSITION_CONTROL,targetPositions= list(action))
         
         
-        pb.stepSimulation()
+        #pb.stepSimulation()
         
         curr = [0.0]*6
         
@@ -111,11 +111,13 @@ class OpenaiIRB(gym.core.Env):
             #print("Current: ", curr)
             if functools.reduce(lambda i, j : i and j, map(lambda m, k: (m-k)< 0.0001, action, curr), True):
                 break
-    
+        
         pos,ore,_,_, _, _ = pb.getLinkState(self.bot, 6)
-        state = list(pos)+list(ore)
-        print("state: ", state)
-        reward,done = self.reward_compute(state)
+        self.state = np.array(list(pos)+list(ore))
+        print("state: ", self.state)
+        reward,done = self.reward_compute(self.state)
+        print('Reward: ',reward)
+        print('\n\n')
 
         return self.state, reward, done, {}
 
