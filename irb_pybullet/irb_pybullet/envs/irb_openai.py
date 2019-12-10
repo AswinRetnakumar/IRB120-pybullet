@@ -41,9 +41,10 @@ class OpenaiIRB(gym.core.Env):
         self.action_space = gym.spaces.Box(
             low  = np.array([-1.91, -1.4, -2.5, -2.0, -1.5, -1]), 
             high = np.array([1.91, 0.9, 0.8, 2.0, 1.5, 0.0]))
-
+        
         self.bot = pb.loadURDF("irb120_3_58.urdf",[0, 0, 0], useFixedBase=1)
-
+        self.distance_threshold = 0.01
+        self.reward_type = 'dense'
  
         self.viewer = None
         self.state = None
@@ -60,6 +61,7 @@ class OpenaiIRB(gym.core.Env):
 
         return np.array(self.state)
     
+    '''
     def distance(self,state):
 
         p = []
@@ -68,7 +70,34 @@ class OpenaiIRB(gym.core.Env):
 
         return p
 
+    '''
 
+    def goal_distance(self, goal_a, goal_b):
+        #assert goal_a.shape == goal_b.shape
+        p = []
+        for i in range(len(self.goal_pose)):
+            p.append(goal_a[i] - goal_b[i])
+        print("p: ", p)
+        return np.sum(np.absolute(p)) 
+
+
+    def reward_compute(self, state):
+
+        d = self.goal_distance(self.state, self._goal_pose)
+
+        if self.reward_type == 'sparse':
+            return -(d > self.distance_threshold).astype(np.float32)
+        else:
+            if d> self.distance_threshold:
+                done = False
+                return -d, done
+            else:
+                done = True
+                return -d, done
+
+            
+
+    '''
     def reward_compute(self,state):
         
         threshold = 2
@@ -86,7 +115,7 @@ class OpenaiIRB(gym.core.Env):
             reward = -10
         
         return reward, done
-        
+    '''
 
     def step(self, action):
 

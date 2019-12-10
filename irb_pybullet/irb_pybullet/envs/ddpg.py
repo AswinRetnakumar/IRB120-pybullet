@@ -1,14 +1,15 @@
 
 # https://deeplearningcourses.com/c/cutting-edge-artificial-intelligence
 import numpy as np
-import tensorflow.compat.v1 as tf
+#import tensorflow.compat.v1 as tf
+import tensorflow as tf
 import time
 import gym
 import matplotlib.pyplot as plt
 from datetime import datetime
 import irb_pybullet
 
-tf.disable_v2_behavior() 
+#tf.disable_v2_behavior() 
 
 
 ### avoid crashing on Mac
@@ -89,17 +90,17 @@ def ddpg(
     ac_kwargs=dict(),
     seed=0,
     save_folder=None,
-    num_train_episodes=2,
+    num_train_episodes=100,
     test_agent_every=25,
     replay_size=int(1e6),
     gamma=0.99, 
     decay=0.995,
     mu_lr=1e-3,
     q_lr=1e-3,
-    batch_size=50,
-    start_steps=50, 
+    batch_size=10,
+    start_steps=100, 
     action_noise=0.1,
-    max_episode_length=500):
+    max_episode_length=2000):
 
   tf.set_random_seed(seed)
   np.random.seed(seed)
