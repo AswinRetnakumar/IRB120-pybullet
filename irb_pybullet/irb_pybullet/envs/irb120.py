@@ -8,6 +8,7 @@ pb.setAdditionalSearchPath(pybullet_data.getDataPath())
 pb.setGravity(0,0,-9.8)
 planeId = pb.loadURDF("plane.urdf")
 bot = pb.loadURDF("irb120_3_58.urdf",[0, 0, 0], useFixedBase=1)
+goal = [0.2665122782069116, 0.40988654527750035, 0.16178715865384]
 #pb.setTimeStep(20)
 pb.setRealTimeSimulation(0)
 
@@ -22,6 +23,8 @@ def getJointStates(robot):
 
 def main():
 
+        
+        pb.addUserDebugLine(goal, goal, [1, 0, 0])
         print(pb.getNumJoints(bot))
         pb.setJointMotorControlArray(bot, range(6), pb.POSITION_CONTROL,targetPositions=[2.0868742, 0.99862355, 0.8, 1.0039154, 0.9852633, 1.0926043])
         #print(pb.getBasePositionAndOrientation(bot))

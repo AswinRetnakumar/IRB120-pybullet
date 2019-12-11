@@ -1,15 +1,15 @@
 
 # https://deeplearningcourses.com/c/cutting-edge-artificial-intelligence
 import numpy as np
-#import tensorflow.compat.v1 as tf
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+#import tensorflow as tf
 import time
 import gym
 import matplotlib.pyplot as plt
 from datetime import datetime
 import irb_pybullet
 
-#tf.disable_v2_behavior() 
+tf.disable_v2_behavior() 
 
 
 ### avoid crashing on Mac
@@ -25,7 +25,10 @@ if sys_pf == 'darwin':
 # simple feedforward neural net
 def ANN(x, layer_sizes, hidden_activation=tf.nn.relu, output_activation=None):
   for h in layer_sizes[:-1]:
-    x = tf.layers.dense(x, units=h, activation=hidden_activation)
+    if h> 6:
+      x = tf.layers.dense(x, units=6, activation=hidden_activation)
+    else:
+      x = tf.layers.dense(x, units=h, activation=hidden_activation)
   return tf.layers.dense(x, units=layer_sizes[-1], activation=output_activation)
 
 
@@ -43,7 +46,7 @@ def CreateNetworks(
     action_max,
     hidden_sizes=(300,),
     hidden_activation=tf.nn.relu, 
-    output_activation=tf.tanh):
+    output_activation=tf.tanh):+
 
   with tf.variable_scope('mu'):
     mu = ANN(s, list(hidden_sizes)+[num_actions], hidden_activation, output_activation) # edit here to include the differences in action space bou
@@ -92,7 +95,7 @@ def ddpg(
     ac_kwargs=dict(),
     seed=0,
     save_folder=None,
-    num_train_episodes=100,
+    num_train_episodes=200,
     test_agent_every=25,
     replay_size=int(1e6),
     gamma=0.99, 
@@ -100,7 +103,7 @@ def ddpg(
     mu_lr=1e-3,
     q_lr=1e-3,
     batch_size=10,
-    start_steps=50, 
+    start_steps=200, 
     action_noise=0.1,
     max_episode_length=2000):
 
@@ -327,7 +330,10 @@ def ddpg(
   # plt.plot(mu_losses)
   # plt.title('mu_losses')
   # plt.show()
-  q.save("QNet")
+  
+  #saver = tf.train.Saver(mu)
+  #saver.save(sess, 'QNet')
+
 
 
 def smooth(x):
@@ -346,7 +352,7 @@ if __name__ == '__main__':
   
   parser.add_argument('--env', type=str, default='irb_pybullet-v0')
   parser.add_argument('--hidden_layer_sizes', type=int, default=300)
-  parser.add_argument('--num_layers', type=int, default=1)
+  parser.add_argument('--num_layers', type=int, default=3)
   parser.add_argument('--gamma', type=float, default=0.99)
   parser.add_argument('--seed', type=int, default=0)
   parser.add_argument('--num_train_episodes', type=int, default=200)
