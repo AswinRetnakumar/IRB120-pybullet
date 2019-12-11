@@ -20,6 +20,8 @@ if sys_pf == 'darwin':
     matplotlib.use("TkAgg")
 
 
+
+
 # simple feedforward neural net
 def ANN(x, layer_sizes, hidden_activation=tf.nn.relu, output_activation=None):
   for h in layer_sizes[:-1]:
@@ -98,7 +100,7 @@ def ddpg(
     mu_lr=1e-3,
     q_lr=1e-3,
     batch_size=10,
-    start_steps=100, 
+    start_steps=50, 
     action_noise=0.1,
     max_episode_length=2000):
 
@@ -187,6 +189,8 @@ def ddpg(
   sess.run(tf.global_variables_initializer())
   sess.run(target_init)
 
+  
+
   def get_action(s, noise_scale):
     a = sess.run(mu, feed_dict={X: s.reshape(1,-1)})[0]
     a += noise_scale * np.random.randn(num_actions)
@@ -230,6 +234,7 @@ def ddpg(
     # reset env
     s, episode_return, episode_length, d = env.reset(), 0, 0, False
     k, p = 0, 0
+    num_steps = 0
     while not (d or (episode_length == max_episode_length)):
       # For the first `start_steps` steps, use randomly sampled actions
       # in order to encourage exploration.
@@ -322,6 +327,7 @@ def ddpg(
   # plt.plot(mu_losses)
   # plt.title('mu_losses')
   # plt.show()
+  q.save("QNet")
 
 
 def smooth(x):
