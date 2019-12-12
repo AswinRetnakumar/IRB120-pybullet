@@ -80,11 +80,20 @@ class OpenaiIRB(gym.core.Env):
 
     def goal_distance(self, goal_a, goal_b):
         #assert goal_a.shape == goal_b.shape
+        '''
+        Scaling for positional accuracy
         p = []
         for i in range(len(self.goal_pose)):
-            p.append(goal_a[i] - goal_b[i])
+            if i<3:
+                p.append((goal_a[i] - goal_b[i])*10)
+            else:
+                p.append(goal_a[i] - goal_b[i])
         print("p: ", p)
         return np.sum(np.absolute(p)) 
+        '''
+        d = np.linalg.norm(goal_a - goal_b, axis=-1)
+
+        return d 
 
 
     def reward_compute(self, state):
