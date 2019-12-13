@@ -8,7 +8,7 @@ import gym
 import matplotlib.pyplot as plt
 from datetime import datetime
 import irb_pybullet
-
+#from irb_testenv import Test
 tf.disable_v2_behavior() 
 
 
@@ -205,7 +205,7 @@ def ddpg(
   test_returns = []
   
   '''
-  verthe samayam kalayan
+  #verthe samayam kalayan
   def test_agent(num_episodes=5):
     t0 = datetime.now()
     n_steps = 0
@@ -350,7 +350,9 @@ if __name__ == '__main__':
   import argparse
   parser = argparse.ArgumentParser()
   
+  
   parser.add_argument('--env', type=str, default='irb_pybullet-v0')
+  #parser.add_argument('--env', type=str, default='ReacherBulletEnv-v0')
   parser.add_argument('--hidden_layer_sizes', type=int, default=300)
   parser.add_argument('--num_layers', type=int, default=2)
   parser.add_argument('--gamma', type=float, default=0.99)
