@@ -7,7 +7,11 @@ import irb_pybullet
 from keras.models import Sequential,Model
 from keras.layers import Flatten , Dense, Activation, Input
 import tf.compat.v1 as tf
+from keras import backend as K
 
+sess = tf.Session()
+
+K.set_session(sess)
 
 def Network(s, layer_size, hidden_activation='relu', output_activation = 'tanh'):
     
@@ -31,6 +35,8 @@ def Create_Net(s, action, layer_size, num_layers, action_size):
         q_mu = tf.squeeze(Network(input_, layer_size+[1]), axis=1)
     
     return mu, q, q_mu
+
+
 
 
 
